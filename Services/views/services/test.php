@@ -5,6 +5,54 @@ use yii\helpers\Html;
 
 ?>
 
+
+
+<script> 
+const infoblock;
+
+const all = length;
+const max = 4;
+const page = length/4;
+
+id1
+id2
+id3
+id4
+
+id5
+id6
+id7
+id8
+
+id9
+id10
+id11
+id12
+
+if(page > 4){
+  '4.page  ...  last.page';
+    if(last.page.style == 'active'){
+      '1.page  ...  last.page-2 last.page-1 last.page';
+    }
+}
+
+  function pagination(){
+  var k;
+
+for (var i = 1; i < length; i++){
+  for(var j = 1; j<=max; j++)
+page{i}
+id == k;
+document.create('list.object')
+k++;
+}
+  }
+
+</script>
+
+
+
+
 <script>
 
 var count = servicesTableArray.length; //всего записей... передать общее число генерируемых услуг

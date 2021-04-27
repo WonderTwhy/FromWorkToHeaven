@@ -13,9 +13,9 @@
 }
 
 .services__list-button:hover {
-    box-shadow: 0 5px 20px 0 rgb(0 0 0 / 12%);
-    transition: .3s;
-    background-color: whitesmoke;
+    border: 1px solid #7ec2cc;
+    box-shadow: 0 0 5px #10849699;
+    transition: border-color 0.45s ease-in-out, box-shadow 0.45s ease-in-out;
     
 }
 
@@ -45,19 +45,27 @@
     border-radius: .35rem;
     background-color: #ffffff;
     box-shadow: 0 2px 0 0 #dce1e65c, 0 0 0 1px #f7f7f76e;
-    font-weight: 700;
+    font-weight: 400;
     cursor: pointer;
     outline: 0;
     transition: 1s background-color, 1s transform;
     width: 100%;
     margin-bottom: 5px;
-    font-family: Palatino, URW Palladio L, serif;
+    font-family: fantasy, serif;
     font-size: 14;
+    letter-spacing: 1px;
+    color: rgb(53, 42, 42);
 }
 
 .services__list-button:active {
     transform: scale(0.95);
+    box-shadow: 0 0 5px #09941bf3;
+    border: 1px solid #0abb27;
+    transition: border-color 0.45s ease-in-out;
+
 }
+
+
 
 .services__list-container {
 
@@ -133,7 +141,7 @@
     overflow: hidden;
     transition: max-height 1s;
     text-align: justify;
-    font-family: Roboto, URW Palladio L, serif;
+    font-family: 'Roboto', serif;
 }
 
 .services__list-cont {
