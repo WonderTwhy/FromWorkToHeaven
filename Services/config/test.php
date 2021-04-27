@@ -24,10 +24,6 @@ return [
         'urlManager' => [
             'showScriptName' => true,
         ],
-        'formatter' => [
-            'thousandSeparator' => ',',
-            'currencyCode' => 'USD',
-       ],
         'user' => [
             'identityClass' => 'app\models\User',
         ],

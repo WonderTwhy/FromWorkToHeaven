@@ -9,7 +9,7 @@ $config = [
     'bootstrap' => ['log'],
     'name' => 'Services',
     'language' => 'ru',
-    'defaultRoute' => '/services/index',
+    'defaultRoute' => 'ServiceModule/index',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -26,10 +26,6 @@ $config = [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
-        'formatter' => [
-            'currencyCode' => '',
-            'thousandSeparator' => ',',
-       ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],

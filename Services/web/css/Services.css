@@ -1,3 +1,8 @@
+body {
+    margin: 1px;
+    overflow: hidden;
+}
+
 .services {
     box-sizing: border-box;
     width: 100%;
@@ -13,20 +18,20 @@
 }
 
 .services__list-button:hover {
-    border: 1px solid #7ec2cc;
-    box-shadow: 0 0 5px #10849699;
+    border: 1px solid #919292;
+    box-shadow: 0 0 5px #97e7f399;
     transition: border-color 0.45s ease-in-out, box-shadow 0.45s ease-in-out;
-    
 }
 
 .services__list-button.active {
-    background-color: rgb(218, 213, 218);
+    background-color: rgb(230, 231, 238);
 }
 
 .services__list {
     list-style-type: none;
     padding: 0;
     overflow-y: auto;
+    border-bottom: solid 1px rgb(143, 141, 141);
 }
 
 .services__result-container {
@@ -45,34 +50,29 @@
     border-radius: .35rem;
     background-color: #ffffff;
     box-shadow: 0 2px 0 0 #dce1e65c, 0 0 0 1px #f7f7f76e;
-    font-weight: 400;
+    font-weight: 550;
     cursor: pointer;
     outline: 0;
     transition: 1s background-color, 1s transform;
     width: 100%;
-    margin-bottom: 5px;
-    font-family: fantasy, serif;
+    margin-bottom: 6.5px;
+    font-family: Roboto, serif;
     font-size: 14;
-    letter-spacing: 1px;
-    color: rgb(53, 42, 42);
+    letter-spacing: 0.5px;
+    color: rgb(45, 42, 53);
 }
 
 .services__list-button:active {
     transform: scale(0.95);
-    box-shadow: 0 0 5px #09941bf3;
-    border: 1px solid #0abb27;
+    box-shadow: 0 0 5px #095594f3;
+    border: 1px solid #0a89bb;
     transition: border-color 0.45s ease-in-out;
-
 }
 
+.services__list-container {}
 
-
-.services__list-container {
-
-}
-
-.services__list-container1 {
-    margin-bottom: 3px;
+.services__list-container.all {
+    margin-bottom: 5px;
     border-bottom: solid 1px rgb(143, 141, 141);
 }
 
@@ -92,11 +92,11 @@
     display: block;
     border-bottom: 1px solid #e8eced;
     padding: 1.5rem 1.5rem 1.5rem 2.5rem;
-    transition: all 2s;
+    transition: all 1.10s;
 }
 
 .services__result-item-container:hover {
-    box-shadow: 0 5px 20px 0 rgb(0 0 0 / 12%);
+    box-shadow: 0 5px 25px 0 rgb(0 0 0 / 20%);
 }
 
 .services__container-row {
@@ -122,11 +122,12 @@
 
 .services__container-title {
     margin-bottom: 12px;
-    font-size: 18px;
+    font-size: 17px;
     line-height: 24px;
-    color: #12282f;
+    color: #26363b;
     transition: color .3s;
-    
+    font-family: Roboto, serif;
+    font-weight: 600;
 }
 
 .services__container-title:hover {
@@ -141,7 +142,8 @@
     overflow: hidden;
     transition: max-height 1s;
     text-align: justify;
-    font-family: 'Roboto', serif;
+    font-family: Roboto, serif;
+    font-weight: 400;
 }
 
 .services__list-cont {
@@ -173,7 +175,6 @@
     background: #ffffff;
     border-bottom: 1px solid #c4c4c4;
     border-top: 1px rgb(124, 124, 124);
-    
 }
 
 .icon {
@@ -187,11 +188,58 @@
 .iframe__window {
     width: 100%;
     height: 750px;
+    border-style: inset;
 }
 
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    padding: .5rem;
+}
 
+.pagination__item {
+    margin-left: 2px;
+    margin-right: 2px;
+    padding: 0 8px;
+    background-color: transparent;
+    border-radius: 3px;
+    border: 1px solid #cecece;
+    font-size: 13px;
+    line-height: 1.92307692;
+    color: #313131;
+    cursor: pointer;
+    transition: background-color .5s, transform .1s;
+    user-select: none;
+}
+
+.pagination__item:hover {
+    background-color: #dcdcdc;
+}
+
+.pagination__item:not(.active):active {
+    transform: scale(0.95);
+}
+
+.pagination__item.clear {
+    color: inherit;
+    border-color: transparent;
+    background-color: transparent;
+    cursor: unset;
+    pointer-events: none;
+}
+
+.pagination__item.active {
+    color: white;
+    background-color: #ffa816;
+    cursor: not-allowed;
+    pointer-events: none;
+    border-color: #ffa816;
+}
 
 @media (max-width: 991px) {
+    body {
+        overflow: auto;
+    }
     .services__list-button:active {
         transform: scale(1);
     }
@@ -208,34 +256,12 @@
         margin-top: 1rem;
         width: 100% !important;
     }
-    .services__result-container{
+    .services__result-container {
         margin-left: 0px;
         display: none;
     }
-    .services__groups-container{
+    .services__groups-container {
         height: auto;
         justify-content: space-between;
     }
 }
-
-.num {
-    display: none;
-  }
-  .paginator {
-    line-height: 150%;
-
-  }
-  .paginator > span {
-    display: inline-block;
-    margin-right: 10px;
-    cursor: pointer;
-    
-    width: auto;
-    bottom: auto;
-   
-  }
-  .paginator_active {
-    color: red;
-  }
-
-

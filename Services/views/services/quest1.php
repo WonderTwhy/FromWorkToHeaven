@@ -6,27 +6,12 @@ use yii\helpers\Html;
   
 
 
-
-
-
-<div class="page">
-  <div data-num=1 class="num">1</div>
-  <div data-num=2 class="num">2</div>
-  <div data-num=3 class="num">3</div>
-  <div data-num=4 class="num">4</div>
-  <div data-num=5 class="num">5</div>
-  <div data-num=6 class="num">6</div>
-  <div data-num=7 class="num">7</div>
-  <div data-num=8 class="num">8</div>
-  <div data-num=9 class="num">9</div>
-  <div data-num=10 class="num">10</div>
-</div>
 <!-- Создать кнопку, которая будет выводить все услуги независимо от id -->
 <!-- <div class="paginator" onclick="pagination(event)"></div> -->
 <!-- Разместить блок 'paginator' снизу фрейма -->
 
 <link rel='stylesheet' href='/web/css/Services.css'>
-<!-- <link rel='stylesheet' href='/css/Services.css'> -->
+
 
 <div>
   <div id="mainContainer" class="services">
@@ -35,8 +20,11 @@ use yii\helpers\Html;
         <input id="searchInput" type="text" class="services__search-input">
         <img src="/web/img/search.png" alt="" class = 'icon'>
       </div>
-      <ul id="service_list_id" class="services__list">
-      <li id = 'singleService' class='services__list-container services__list-container1'><button class='services__list-button' onclick = getAllServices() id = "serviceMain_button">Все услуги</button>  </li>
+      <ul class="services__list">
+      <li class='services__list-container all'>
+        <button id="services_button_all" class='services__list-button all' onclick="getServices('all')">Все услуги</button>  
+        <div id="services_list_all" class="services__list-cont"></div>
+      </li>
       <div id="services_list_0" class="services__list-cont"></div>
       <?php 
         $newId = 1;
@@ -53,8 +41,13 @@ use yii\helpers\Html;
       <div class="paginator" onclick="pagination(event)"></div>
     </div>
     
-    <div id="servicesContainer" class="services__result-container">
+    <div class="services__result-container">
+          <div id="servicesContainer">
           
+          </div>
+          <div id="paginationContainer" class="pagination">
+
+          </div>
     </div>
   </div>
 </div>
@@ -78,26 +71,18 @@ console.log(servicesTableArray.length);
 const mainContainer = document.getElementById("mainContainer");
 const servicesContainer = document.getElementById("servicesContainer");
 const buttonsContainers = document.querySelectorAll(".services__list-cont");
+const paginationContainer = document.getElementById("paginationContainer");
 const searchInput = document.getElementById("searchInput");
-const groupButtons = document.querySelectorAll(".services__list-button");
+const groupButtons = document.querySelectorAll(".services__list-button:not(.all)");
 const groupList = document.getElementById("groupList");
 const serviceSearch = document.getElementById("serviceSearch");
 
 const maxElementHeight = 50;
 const collapseWidth = 991;
+const maxServiceItems = 2;
 var mobileScreen = false;
 
-// Функция подгоняет высоту mainContainer, в котором содержатся кнопки и строчка поиска под их общую высоту 
-/*function fitMedia(){
-var sumOfHeight = 0;
-groupButtons.forEach(function(elem, key){
-  if(elem.style.display != 'none' && mobileScreen == true){
-    sumOfHeight += elem.offsetHeight;}
-}) 
-  if(mobileScreen == true)
-    mainContainer.style.height = sumOfHeight + serviceSearch.offsetHeight + 30; 
-}
-*/
+
 // Проверка разрешения экрана по width, флаг для настройки адаптивности
 function checkTypeScreen() {
   if (mainContainer.offsetWidth <= collapseWidth) mobileScreen = true;
@@ -154,11 +139,152 @@ function createServiceElement(parent, value) {
 // Функция закрывает(удаляет) предыдущий блок с информацией о сервисе, который сформировали работает при mobile = true
 function clearAllServices() {
   if (servicesContainer) servicesContainer.innerHTML = "";
+  if (paginationContainer) paginationContainer.innerHTML = "";
 
   if (buttonsContainers) {
     buttonsContainers.forEach(function(elem, key) {elem.innerHTML = "";});
   }
 }
+
+////////////////////////////////////pag
+function getItemsList(array, pageSize) {
+    const pageNum = Math.ceil(array.length / pageSize);
+    const listPageObjects = new Array();
+
+    let elemNum = 0,
+        elemPage = 0;
+
+    if (!Array.isArray(array)) array = Object.entries(array);
+    array.forEach(function(value, key) {
+        if (listPageObjects[elemPage] == undefined) listPageObjects[elemPage] = new Array();
+        listPageObjects[elemPage][elemNum] = value;
+
+        elemNum++;
+
+        if (elemNum >= pageSize) {
+            elemNum = 0;
+            elemPage++;
+        }
+    });
+
+    return listPageObjects;
+}
+
+function getButtonsList(array, curPage, maxItems = 4) {
+  let leftArray = new Array();
+  let rightArray = new Array();
+  for (let i = curPage - 1, it = 0; i >= 0 && it < maxItems; i--, it++) {
+      if (array[i]) {
+          if (it == maxItems - 2) {
+              leftArray.unshift('...');
+          } else if (it == maxItems - 1 && i != 0) {
+              leftArray.unshift({
+                  pageNumber: 0,
+                  itemsList: array[0]
+              })
+          } else {
+              leftArray.unshift({
+                  pageNumber: i,
+                  itemsList: array[i]
+              })
+          }
+      }
+  }
+
+  for (let i = curPage + 1, it = 0; i < array.length && it < maxItems; i++, it++) {
+      if (array[i]) {
+          if (it == maxItems - 2) {
+              rightArray.push('...');
+          } else if (it == maxItems - 1 && i != 0) {
+              rightArray.push({
+                  pageNumber: array.length - 1,
+                  itemsList: array[array.length - 1]
+              })
+          } else {
+              rightArray.push({
+                  pageNumber: i,
+                  itemsList: array[i]
+              })
+          }
+      }
+  }
+
+  const curItem = {
+      pageNumber: curPage,
+      itemsList: array[curPage],
+      active: true
+  }
+  let resultButtonsList = new Array();
+  resultButtonsList = resultButtonsList.concat(leftArray, curItem, rightArray);
+
+  if (array.length > 1) {
+    resultButtonsList.unshift('Prev');
+    resultButtonsList.push('Next');
+  } 
+
+  return resultButtonsList;
+}
+
+function createGroupButtons(arrayButtons, arrayItems, parent, parentContent) {
+  if (parent) parent.innerHTML = "";
+  else return;
+
+  function newPageValue(curPage, value, arrayItems) {
+      if (typeof value !== 'object') {
+          if (value.toLowerCase() == "next" && curPage + 1 <= arrayItems.length - 1) {
+              return curPage + 1;
+          } else if (value.toLowerCase() == "prev" && curPage - 1 >= 0) {
+              return curPage - 1;
+          } else return false;
+      } else {
+          return value.pageNumber != curPage ? value.pageNumber : false;
+      }
+  }
+
+  let curPage = null;
+  arrayButtons.forEach(function(value, key) {
+      let paginationItem;
+
+      if (value == "...") {
+          paginationItem = document.createElement('div');
+          paginationItem.classList.add('clear');
+      } else {
+          paginationItem = document.createElement('a');
+      }
+
+      paginationItem.innerText = typeof value === 'object' ? value.pageNumber + 1 : value;
+      paginationItem.setAttribute('data-page', typeof value === 'object' ? value.pageNumber : value);
+
+      if (value.active && value.active == true) {
+          paginationItem.classList.add('active')
+          curPage = value;
+      }
+
+      paginationItem.classList.add('pagination__item');
+      parent.append(paginationItem);
+
+      if (value != "...") {
+          paginationItem.addEventListener('click', () => {
+              const newPage = newPageValue(curPage.pageNumber, value, arrayItems);
+              if (newPage !== false) {
+                  const bList = getButtonsList(arrayItems, newPage);
+                  createGroupButtons(bList, arrayItems, parent, parentContent);
+              }
+          });
+      }
+  });
+
+  if (curPage && curPage.itemsList && parentContent) {
+    parentContent.innerHTML = "";
+
+    curPage.itemsList.forEach(function(value, key) {
+      createServiceElement(parentContent, value);
+    });
+
+  }
+
+}
+///////////////////////////////////////////////////pag
 
 // Вывод услуг по нажатию кнопки
 function getServices(id = null) {
@@ -182,63 +308,34 @@ function getServices(id = null) {
       button.classList.remove('active');
     }
     else {
+      const servicesItemsList = new Array();
+      const parent = mobileScreen && list ? list : servicesContainer;
+
       servicesTableArray.forEach(function(value, key) {
-      if (value["idServiceGroup"] == serviceGroupId) {
-        if (mobileScreen && list) createServiceElement(list, value);
-        else {
-          createServiceElement(servicesContainer, value);
+        if (id == "all" || value["idServiceGroup"] == serviceGroupId) {
+          servicesItemsList.push(value);
         }
+      });
+
+      if (servicesItemsList.length > 0) {
+        const iList = getItemsList(servicesItemsList, maxServiceItems);
+        const bList = getButtonsList(iList, 0);
+
+        createGroupButtons(bList, iList, paginationContainer, parent);
       }
-    });
     }
 
     checkEmptyServicesContainer();
   }
 
 }
-// Обработчик кнопки получения всех услуг
-function getAllServices(id = null) {
-  const button = document.getElementById(`serviceMain_button`);
-  const list = document.getElementById(`services_list_0`);
 
-  const lastActiveButton = document.querySelector(".services__list-button.active");
-
-  //Проверка на уже открытое поле
-  if (lastActiveButton) lastActiveButton.classList.remove('active');
-
-  clearAllServices();
-
-  if (button && servicesContainer) {
-    const serviceGroupId = button.getAttribute("service-group");
-
-    button.classList.add('active');
-
-    if (lastActiveButton == button && list) {
-      console.log(1);
-      list.innerHTML = "";
-      button.classList.remove('active');
-    }
-    else {
-      servicesTableArray.forEach(function(value, key) {
-      if (true) {
-        if (mobileScreen && list) createServiceElement(list, value);
-        else {
-          createServiceElement(servicesContainer, value);
-        }
-      }
-    });
-    }
-
-    checkEmptyServicesContainer();
-  }
-
-}
 // -----------------------------
 
 clearAllServices();
 checkTypeScreen();
 checkEmptyServicesContainer();
-//fitMedia();
+
 
 
 window.addEventListener("resize", () => {
@@ -257,7 +354,7 @@ searchInput.addEventListener("change", () => {
     }
     else elem.style.display = "none";
   }); 
- // fitMedia();
+ 
 });
 
 // Если высота блока текста больше дефолта, то добавляем кнопку, которая обрабатывает блок, раскрывая его по фул-контенту
@@ -288,69 +385,6 @@ function collapseText(object) {
 
   }
 }
-
-var count = servicesTableArray.length; //всего записей... передать общее число генерируемых услуг
-var cnt = 2; //сколько отображаем сначала ... для общей кнопки столько же, сколько для групповых
-var cnt_page = Math.ceil(count / cnt); //кол-во страниц
-
-//выводим список страниц
-var paginator = document.querySelector(".paginator");
-var page = "";
-for (var i = 0; i < cnt_page; i++) {
-  if(i == 0)
-  {
-    page += "<span data-page=" + i * cnt + "  id=\"page" + (i + 1) + "\"" + "class=\"paginator_active\"" + "\">" + (i + 1) + "</span>";
-  }
-  else
-  page += "<span data-page=" + i * cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span>";
-}
-
-paginator.innerHTML = page;
-
-//выводим первые записи {cnt}
-var div_num = document.querySelectorAll(".services__list-container");
-for (var i = 0; i < div_num.length; i++) {
-  if (i < cnt) {  
-    div_num[i].style.display = "block";
-  }
-}
-
-
-var main_page = document.getElementById("service_list_id");
-main_page.classList.add("paginator_active"); 
-
-
-
-//листаем
-function pagination(event) {
-  var e = event || window.event;
-  var target = e.target;
-  var id = target.id;
-  
-  if (target.tagName.toLowerCase() != "span") return;
-  
-  var num_ = id.substr(4);
-  var data_page = +target.dataset.page;
-  console.log(page);
-  main_page.classList.remove("paginator_active");
-  main_page = document.getElementById(id);
-  main_page.classList.add("paginator_active");
-
-  var j = 0;
-  for (var i = 0; i < div_num.length; i++) {
-    var data_num = div_num[i].dataset.num;
-    
-     div_num[i].style.display = "none";
-
-  }
-  for (var i = data_page; i < div_num.length; i++) {
-    if (j >= cnt) break;
-    div_num[i].style.display = "block";
-    j++;
-  }
-}
-
-
 
 </script>
 
